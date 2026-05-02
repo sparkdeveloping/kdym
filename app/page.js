@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -9,10 +9,8 @@ import {
   Menu,
   Play,
   ShoppingBag,
-  Sparkles,
   Ticket,
   X,
-  Zap,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -53,8 +51,8 @@ const events = [
 
 const navItems = [
   { label: "Events", href: "#events" },
-  { label: "Watch", href: "#watch" },
-  { label: "Merch", href: "#merch" },
+  { label: "Play", href: "/play" },
+  { label: "Merch", href: "/merch" },
   { label: "Connect", href: "#connect" },
 ];
 
@@ -128,7 +126,12 @@ function GlitchWord() {
       <motion.h1
         initial={{ opacity: 0, y: 40, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.9, type: "spring", stiffness: 90, damping: 13 }}
+        transition={{
+          duration: 0.9,
+          type: "spring",
+          stiffness: 90,
+          damping: 13,
+        }}
         className="font-glitch text-[4.8rem] leading-[0.75] tracking-[-0.08em] text-white drop-shadow-[0_0_35px_rgba(255,255,255,0.25)] sm:text-[7rem] md:text-[9rem] lg:text-[12rem]"
       >
         OUTPOUR
@@ -301,7 +304,7 @@ export default function Home() {
           transition={{ type: "spring", stiffness: 140, damping: 18 }}
           className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/10 bg-black/35 px-4 py-3 shadow-2xl backdrop-blur-2xl md:px-5"
         >
-          <a href="#" className="flex items-center gap-3">
+          <a href="/" className="flex items-center gap-3">
             <img
               src="/KDYM-Logotype-White.png"
               alt="Kansas District Youth Ministries"
@@ -422,8 +425,8 @@ export default function Home() {
                 <Ticket size={18} />
               </MagneticButton>
 
-              <MagneticButton href="#watch" variant="secondary">
-                Watch Moments
+              <MagneticButton href="/play" variant="secondary">
+                Open Play
                 <Play size={17} fill="currentColor" />
               </MagneticButton>
             </motion.div>
@@ -506,47 +509,117 @@ export default function Home() {
       <section className="relative z-10 px-5 py-24 md:px-8 lg:px-10">
         <div className="mx-auto max-w-7xl">
           <motion.div
-            initial={{ opacity: 0, y: 26 }}
+            initial={{ opacity: 0, y: 34 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="grid gap-5 md:grid-cols-3"
+            viewport={{ once: true, margin: "-120px" }}
+            transition={{ type: "spring", stiffness: 110, damping: 18 }}
+            className="relative overflow-hidden rounded-[2.75rem] border border-white/10 bg-white/[0.035] p-7 shadow-[0_30px_120px_rgba(0,0,0,0.35)] backdrop-blur-2xl md:p-12"
           >
-            {[
-              {
-                icon: Flame,
-                label: "Outpour",
-                text: "A theme that feels bold, urgent, spiritual, and unmistakably youth-centered.",
-              },
-              {
-                icon: Zap,
-                label: "Momentum",
-                text: "One place for events, recaps, registration, media, merch, and announcements.",
-              },
-              {
-                icon: Sparkles,
-                label: "Experience",
-                text: "Dark, modern, kinetic, and memorable without depending on image-heavy design.",
-              },
-            ].map((item) => {
-              const Icon = item.icon;
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(6,182,212,0.18),transparent_28%),radial-gradient(circle_at_86%_18%,rgba(239,68,68,0.24),transparent_30%),radial-gradient(circle_at_50%_100%,rgba(251,191,36,0.12),transparent_35%)]" />
 
-              return (
+            <motion.div
+              animate={{ x: ["-35%", "135%"] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+              className="absolute top-0 h-full w-1/3 rotate-12 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-xl"
+            />
+
+            <div className="relative z-10 grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+              <div>
                 <motion.div
-                  key={item.label}
-                  whileHover={{ y: -8, scale: 1.015 }}
-                  transition={{ type: "spring", stiffness: 280, damping: 17 }}
-                  className="group rounded-[2rem] border border-white/10 bg-white/[0.035] p-7 backdrop-blur-xl"
+                  animate={{
+                    scale: [1, 1.04, 1],
+                    opacity: [0.8, 1, 0.8],
+                  }}
+                  transition={{
+                    duration: 2.7,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="mb-7 inline-flex items-center gap-2 rounded-full border border-red-300/25 bg-red-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-red-100 shadow-[0_0_45px_rgba(239,68,68,0.14)]"
                 >
-                  <div className="mb-10 inline-flex rounded-2xl border border-white/10 bg-white/5 p-4 text-red-200 transition group-hover:scale-110 group-hover:bg-red-500/15">
-                    <Icon size={28} />
-                  </div>
-                  <h3 className="text-3xl font-black uppercase tracking-[-0.05em]">
-                    {item.label}
-                  </h3>
-                  <p className="mt-4 leading-7 text-white/52">{item.text}</p>
+                  <Flame size={16} />
+                  Outpour Scripture
                 </motion.div>
-              );
-            })}
+
+                <h2 className="max-w-4xl text-5xl font-black uppercase leading-[0.87] tracking-[-0.075em] md:text-7xl">
+                  Not just a theme.
+                  <span className="block text-white/45">
+                    A promise poured out.
+                  </span>
+                </h2>
+
+                <p className="mt-7 max-w-2xl text-lg leading-8 text-white/58">
+                  The visual identity points back to the prophecy, the altar,
+                  and the urgency of this generation responding to God in the
+                  last days.
+                </p>
+              </div>
+
+              <div className="relative">
+                <motion.div
+                  animate={{
+                    rotate: [-1.2, 1.2, -1.2],
+                    y: [0, -10, 0],
+                  }}
+                  transition={{
+                    duration: 5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-black/35 p-7 md:p-9"
+                >
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.16),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(239,68,68,0.22),transparent_35%)]" />
+
+                  <div className="relative z-10">
+                    <p className="text-sm font-black uppercase tracking-[0.28em] text-cyan-200">
+                      Joel 2:28
+                    </p>
+
+                    <blockquote className="mt-6 text-3xl font-black uppercase leading-[1.02] tracking-[-0.055em] text-white md:text-5xl">
+                      “I will pour out my spirit upon all flesh.”
+                    </blockquote>
+
+                    <div className="mt-8 h-px w-full bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+
+                    <motion.div
+                      animate={{
+                        opacity: [0.35, 1, 0.35],
+                        letterSpacing: ["0.16em", "0.24em", "0.16em"],
+                      }}
+                      transition={{
+                        duration: 2.2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      className="mt-8 text-center text-sm font-black uppercase text-red-200 md:text-base"
+                    >
+                      These are the last days
+                    </motion.div>
+
+                    <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                      {["Sons", "Daughters", "Young Men"].map((word, index) => (
+                        <motion.div
+                          key={word}
+                          animate={{
+                            y: [0, -6, 0],
+                            opacity: [0.62, 1, 0.62],
+                          }}
+                          transition={{
+                            duration: 2.5,
+                            delay: index * 0.25,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                          className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white/65"
+                        >
+                          {word}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -564,8 +637,8 @@ export default function Home() {
             </div>
 
             <p className="max-w-xl text-lg leading-8 text-white/55">
-              The site should not feel like a static flyer. It should feel like
-              the official home base for everything KDYM is carrying this year.
+              This is the home base for rallies, convention, camp, registration,
+              media, merch, and what KDYM is carrying this year.
             </p>
           </div>
 
@@ -577,128 +650,53 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="watch" className="relative z-10 px-5 py-24 md:px-8 lg:px-10">
-        <div className="mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.035] p-6 shadow-[0_30px_120px_rgba(0,0,0,0.35)] backdrop-blur-xl md:p-10">
-          <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
-            <div>
-              <p className="text-sm font-black uppercase tracking-[0.28em] text-cyan-200">
-                Watch
-              </p>
-              <h2 className="mt-4 text-5xl font-black uppercase leading-[0.9] tracking-[-0.075em] md:text-7xl">
-                Moments that keep speaking.
-              </h2>
-              <p className="mt-6 text-lg leading-8 text-white/55">
-                Recaps, sermons, worship clips, altar moments, convention media,
-                and youth camp content can live here without cluttering the home
-                page.
-              </p>
-
-              <div className="mt-8">
-                <MagneticButton href="#" variant="secondary">
-                  Open Watch
-                  <Play size={17} fill="currentColor" />
-                </MagneticButton>
-              </div>
-            </div>
-
-            <motion.div
-              whileHover={{ scale: 1.015 }}
-              transition={{ type: "spring", stiffness: 220, damping: 16 }}
-              className="relative min-h-[370px] overflow-hidden rounded-[2rem] border border-white/10 bg-black/40 p-6"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(6,182,212,0.2),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(239,68,68,0.22),transparent_28%)]" />
-              <div className="absolute inset-x-8 top-8 h-24 rounded-full bg-white/10 blur-3xl" />
-
-              <div className="relative z-10 flex h-full min-h-[320px] flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <p className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white/50">
-                    Featured Video
-                  </p>
-                  <ArrowUpRight className="text-white/35" />
-                </div>
-
-                <motion.div
-                  animate={{
-                    boxShadow: [
-                      "0 0 0px rgba(255,255,255,0.1)",
-                      "0 0 70px rgba(255,255,255,0.22)",
-                      "0 0 0px rgba(255,255,255,0.1)",
-                    ],
-                  }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-white text-black"
-                >
-                  <Play size={34} fill="black" />
-                </motion.div>
-
-                <div>
-                  <h3 className="text-4xl font-black uppercase tracking-[-0.06em]">
-                    Outpour Recap
-                  </h3>
-                  <p className="mt-3 text-white/50">
-                    Create a clean media grid here when your video links are ready.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      <section id="merch" className="relative z-10 px-5 py-24 md:px-8 lg:px-10">
-        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.025] p-8 md:p-10">
-            <p className="text-sm font-black uppercase tracking-[0.28em] text-red-300">
-              Merch Store
-            </p>
-            <h2 className="mt-4 max-w-3xl text-5xl font-black uppercase leading-[0.9] tracking-[-0.075em] md:text-7xl">
-              Wear the movement.
-            </h2>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/55">
-              Build this section around limited drops, camp shirts, district
-              apparel, and Outpour-themed pieces. Keep it visual, simple, and
-              high-conversion.
-            </p>
-
-            <div className="mt-9">
-              <MagneticButton href="#" variant="secondary">
-                Visit Store
-                <ShoppingBag size={18} />
-              </MagneticButton>
-            </div>
-          </div>
-
-          <motion.div
-            whileHover={{ rotate: 1.2, scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 220, damping: 15 }}
-            className="relative min-h-[390px] overflow-hidden rounded-[2.5rem] border border-white/10 bg-black/35 p-7"
+      <section className="relative z-10 px-5 py-24 md:px-8 lg:px-10">
+        <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-2">
+          <motion.a
+            href="/play"
+            whileHover={{ y: -10, scale: 1.015 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 260, damping: 17 }}
+            className="group relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.04] p-8 transition hover:bg-white/[0.07] md:p-10"
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.16),transparent_28%),radial-gradient(circle_at_80%_80%,rgba(239,68,68,0.25),transparent_30%)]" />
-            <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
-            <div className="absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
-
-            <div className="relative z-10 flex h-full min-h-[330px] flex-col items-center justify-center text-center">
-              <motion.div
-                animate={{ y: [0, -12, 0], rotate: [-2, 2, -2] }}
-                transition={{
-                  duration: 4.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="rounded-[2rem] border border-white/10 bg-white px-10 py-12 text-black shadow-[0_30px_90px_rgba(0,0,0,0.4)]"
-              >
-                <p className="text-xs font-black uppercase tracking-[0.24em] text-black/35">
-                  KDYM
-                </p>
-                <p className="font-glitch mt-2 text-6xl leading-none">OUT</p>
-                <p className="font-glitch text-6xl leading-none">POUR</p>
-              </motion.div>
-
-              <p className="mt-8 text-sm font-black uppercase tracking-[0.24em] text-white/45">
-                Product preview placeholder
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(6,182,212,0.18),transparent_30%)] opacity-80" />
+            <div className="relative z-10">
+              <Play className="mb-14 text-cyan-200" size={38} fill="currentColor" />
+              <p className="text-sm font-black uppercase tracking-[0.25em] text-cyan-200">
+                Play
+              </p>
+              <h3 className="mt-4 text-5xl font-black uppercase leading-[0.9] tracking-[-0.075em]">
+                Watch. Listen. Remember.
+              </h3>
+              <p className="mt-5 max-w-xl leading-7 text-white/55">
+                Videos, recap moments, sermons, Spotify links, Apple Music links,
+                and future audio archives.
               </p>
             </div>
-          </motion.div>
+          </motion.a>
+
+          <motion.a
+            href="/merch"
+            whileHover={{ y: -10, scale: 1.015 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 260, damping: 17 }}
+            className="group relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.04] p-8 transition hover:bg-white/[0.07] md:p-10"
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(239,68,68,0.22),transparent_32%)] opacity-80" />
+            <div className="relative z-10">
+              <ShoppingBag className="mb-14 text-red-200" size={38} />
+              <p className="text-sm font-black uppercase tracking-[0.25em] text-red-200">
+                Merch
+              </p>
+              <h3 className="mt-4 text-5xl font-black uppercase leading-[0.9] tracking-[-0.075em]">
+                Wear the movement.
+              </h3>
+              <p className="mt-5 max-w-xl leading-7 text-white/55">
+                A dedicated store page for camp shirts, Outpour drops, and KDYM
+                apparel.
+              </p>
+            </div>
+          </motion.a>
         </div>
       </section>
 
