@@ -130,6 +130,7 @@ export default function MerchPage() {
               <source src={featuredProduct.video} type="video/mp4"/>
             </video>
             <div className="hy-shop-video-overlay" />
+            {!playing && <button type="button" className="hy-shop-launch" onClick={togglePlay} aria-label="Play Outpour merchandise video"><Play size={30} fill="currentColor" aria-hidden="true" /></button>}
             <span className="hy-shop-label">OUTPOUR / KDYM COLLECTION</span>
             <button type="button" className="hy-shop-pause" onClick={togglePlay} aria-label={playing ? "Pause video" : "Play video"}>{playing ? <Pause size={19}/> : <Play size={19}/>}</button>
             <div className="hy-shop-video-caption">
