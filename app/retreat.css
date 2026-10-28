@@ -239,3 +239,7 @@ body { margin: 0; }
  .hy-shop-video-wrap{height:460px;}
  .hy-shop-video-caption{left:22px;bottom:25px;}
 }
+
+@media(max-width:1050px){.hy-nav-links{display:none;}.hy-menu-button{display:inline-flex;}.hy-mobile-menu{display:block;}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important;}}
+.retreat-root [id]{scroll-margin-top:115px;}
