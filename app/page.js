@@ -209,7 +209,6 @@ export default function HomePage() {
   return (
     <main className="retreat-root" id="top">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredEvent) }} />
-      <a className="hy-skip" href="#main-content">Skip to content</a>
       <motion.div className="hy-progress" style={{ scaleX: progress }} aria-hidden="true"/>
       <PublicHeader />
       <section className="hy-hero" id="main-content" aria-label="Heartland Hyphen Retreat">
