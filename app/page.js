@@ -164,21 +164,42 @@ function AppSection() {
           <a className="hy-detail-link" href="/app" style={{ marginTop: 23 }}>App download options <ArrowRight size={16}/></a>
         </Reveal>
         <Reveal delay={.12}>
-          <div className="hy-app-phone" aria-hidden="true">
-            <div className="hy-phone-notch" />
-            <div className="hy-phone-content">
-              <img src="/KDYM-Icon-White.png" className="hy-phone-icon" alt="" />
-              <strong>ONE<br />DISTRICT.<br /><span style={{ color: "#d3f88d" }}>CONNECTED.</span></strong>
-              <p>Your KDYM experience, wherever you are.</p>
-              <div className="hy-phone-card"><span className="hy-card-label">Coming up</span><div className="hy-card-date">HYPHEN / 26</div></div>
-              <div className="hy-phone-card"><span className="hy-card-label">Stay connected</span><div className="hy-card-date">KDYM COMMUNITY</div></div>
-            </div>
+          <div className="hy-app-art" aria-label="KDYM official app">
+            <div className="hy-app-art-mark"><img src="/KDYM-Icon-White.png" width="114" height="114" alt="KDYM icon" loading="lazy" /></div>
+            <div className="hy-app-art-label">KANSAS DISTRICT YOUTH MINISTRIES / THE APP</div>
+            <strong>ONE<br/>DISTRICT.<br/><span>CONNECTED.</span></strong>
+            <p>Real community. Real updates. One place to stay connected.</p>
           </div>
         </Reveal>
       </div>
     </section>
   );
 }
+
+const structuredEvent = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  name: "Heartland Hyphen Retreat 2026",
+  description: "A Kansas District Youth Ministries young-adult retreat with guest speaker Bruce Howell.",
+  startDate: "2026-11-12",
+  endDate: "2026-11-14",
+  eventStatus: "https://schema.org/EventScheduled",
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  location: {
+    "@type": "Place",
+    name: "Cross Church Kansas City",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "19405 W 151st Terrace",
+      addressLocality: "Olathe",
+      addressRegion: "KS",
+      postalCode: "66062",
+      addressCountry: "US",
+    }
+  },
+  organizer: { "@type": "Organization", name: "Kansas District Youth Ministries", url: "https://kdym.org" },
+  url: "https://kdym.org"
+};
 
 export default function HomePage() {
   const reduced = useReducedMotion();
@@ -187,6 +208,7 @@ export default function HomePage() {
   const heroY = useTransform(scrollYProgress, [0, .4], [0, -110]);
   return (
     <main className="retreat-root" id="top">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredEvent) }} />
       <a className="hy-skip" href="#main-content">Skip to content</a>
       <motion.div className="hy-progress" style={{ scaleX: progress }} aria-hidden="true"/>
       <PublicHeader />
