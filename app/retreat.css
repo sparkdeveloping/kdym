@@ -333,3 +333,13 @@ body { margin: 0; }
   .hy-pulse { box-shadow: none !important; }
   .hy-poster * { animation: none !important; }
 }
+
+
+/* Click-to-play campaign video: no large download before user interaction */
+.hy-shop-launch{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:4;width:84px;height:84px;display:flex;align-items:center;justify-content:center;background:var(--hy-lime);color:#11161b;border-radius:50%;border:1px solid rgba(0,0,0,.16);box-shadow:0 16px 55px rgba(0,0,0,.5);transition:transform .2s,box-shadow .2s;}
+.hy-shop-launch:hover{transform:translate(-50%,-50%) scale(1.08);box-shadow:0 18px 60px rgba(0,0,0,.65);}
+.hy-shop-video-wrap.is-playing .hy-shop-video-caption,.hy-shop-video-wrap.is-playing .hy-shop-label{opacity:0;pointer-events:none;}
+.hy-shop-video-wrap.is-playing .hy-shop-video-overlay{opacity:0;pointer-events:none;}
+.hy-shop-video-wrap.is-playing .hy-shop-video{object-fit:contain;background:#000;}
+.hy-shop-video-caption,.hy-shop-label,.hy-shop-video-overlay{transition:opacity .25s;}
+.hy-shop-video-wrap.is-playing .hy-shop-pause{z-index:5;}
