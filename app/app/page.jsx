@@ -27,7 +27,7 @@ const platforms = [
 
 export default function AppDownloadPage() {
   return (
-    <main className="retreat-root" style={{ minHeight: "100svh", background: "radial-gradient(ellipse at 82% 16%,rgba(150,124,241,.21),transparent 45%),#080a12" }}>
+    <main className="retreat-root" id="main-content" style={{ minHeight: "100svh", background: "radial-gradient(ellipse at 82% 16%,rgba(150,124,241,.21),transparent 45%),#080a12" }}>
       <PublicHeader />
       <section className="hy-container" style={{ paddingTop: 175, paddingBottom: 110 }}>
         <div style={{ maxWidth: 830 }}>
