@@ -57,3 +57,28 @@ The redesign was committed on `redesign/hyphen-retreat-2026`, not directly to `m
 - Check that policy pages remain reachable and brand logo images load.
 - Review actual pricing and add it only when district registration details are reconciled.
 - Verify Vercel preview build passes before merging.
+
+
+---
+
+## Follow-up UI remediation — October 28, 2026
+
+The follow-up UI review resulted in implemented improvements:
+
+- Shared public header/footer now covers home, merchandise, app download, and all three legal/community pages, including consistent internal links.
+- Mobile navigation has Escape support, focus restoration, keyboard Tab wrapping, aria-expanded and aria-controls.
+- Duplicate `| KDYM | KDYM` document titles were corrected.
+- Homepage exposes high-signal dates, speaker, venue and registration directly after the hero.
+- Actual three-day schedule was added using the official Kansas District retreat page: https://kansasupci.org/events/heartland-hyphen-retreat--106/2026-11-12
+- Friday Afterburner is identified as occurring off-site in Overland Park.
+- Planning FAQ differentiates confirmed information from unknowns (lodging, doors, eligibility, current pricing).
+- The old simulated app phone screen is replaced by an editorial brand graphic rather than an inaccurate product screenshot.
+- Hero content no longer needs an opacity-zero client animation to appear.
+- Existing smaller WebP merchandise images replace large PNG assets; the 29.7 MB merch video is manual, click-to-play with preload disabled rather than automatic.
+- Replaced oversized ~2.2 MB favicon with small SVG and added branded Open Graph artwork.
+- Added Event structured data and direct links to the verified January/ March 2027 district events.
+- Rechecked reduced-motion and keyboard focus treatments.
+
+**Remaining manual checks:** Complete registration/payment end-to-end (ChurchTrac requires a form and verification), verify store listing details at their respective consoles, and run full desktop/mobile Lighthouse and accessibility testing on actual devices.
+
+**Pricing discrepancy confirmed October 28:** District public page lists $65/$85/$105, while the supplied ChurchTrac listing states $60/$80/$100 and a separate checkout amount range. The website intentionally avoids a price claim pending the organizer's confirmation.
