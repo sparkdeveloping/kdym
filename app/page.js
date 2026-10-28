@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, useInView } from "framer-motion";
 import { ArrowDown, ArrowRight, ArrowUpRight, CalendarDays, ChevronRight, ExternalLink, MapPin, Menu, Smartphone, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { PublicHeader, PublicFooter } from "../components/PublicSiteChrome";
+import { RetreatAtAGlance, RetreatSchedule, RetreatPlanning } from "../components/RetreatInfo";
 
 const REGISTER = "https://kansasupci.churchtrac.com/connect?ei=HEF01AC";
 const IOS = "https://apps.apple.com/us/app/kdym/id6766344337";
@@ -11,29 +12,19 @@ const ANDROID = "https://play.google.com/store/apps/details?id=dev.bti.kdym";
 const DIRECTIONS = "https://www.google.com/maps/search/?api=1&query=19405%20W%20151st%20Terrace%20Olathe%20KS%2066062";
 const RETREAT_START = new Date("2026-11-12T00:00:00-06:00").getTime();
 
-const nav = [
-  { label: "Retreat", href: "#retreat" },
-  { label: "Experience", href: "#experience" },
-  { label: "Details", href: "#details" },
-  { label: "What's next", href: "#next" },
-  { label: "Get the app", href: "#app" },
-];
-
 const futureEvents = [
-  { date: "JAN 29 / 2027", title: "KDYM Vision Rally", description: "Wichita, Kansas" },
-  { date: "MAR 12–13 / 2027", title: "Kansas Youth Convention", description: "First Pentecostal Church · Wichita" },
+  { date: "JAN 29 / 2027", title: "KDYM Vision Rally", description: "First Pentecostal Church · Wichita", href: "https://kansasupci.org/events/kdym-vision-rally/2027-01-29" },
+  { date: "MAR 12–13 / 2027", title: "Kansas Youth Convention", description: "First Pentecostal Church · Wichita", href: "https://kansasupci.org/events/kansas-youth-convention--108/2027-03-12" },
 ];
 
-function Reveal({ children, className = "", delay = 0 }) {
+function Reveal({ children, className = "", delay = 0, aboveFold = false }) {
   const reduced = useReducedMotion();
+  const ref = useRef(null);
+  const visible = useInView(ref, { once: true, margin: "-50px" });
   return (
-    <motion.div
-      className={className}
-      initial={reduced ? false : { opacity: 0, y: 35 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-65px" }}
-      transition={{ duration: 0.8, ease: [0.2, 0.8, 0.2, 1], delay }}
-    >
+    <motion.div ref={ref} className={className} initial={false}
+      animate={{ opacity: 1, y: reduced || aboveFold || visible ? 0 : 16 }}
+      transition={{ duration: reduced ? 0 : .65, ease: [0.2, 0.8, 0.2, 1], delay }}>
       {children}
     </motion.div>
   );
@@ -53,49 +44,6 @@ function Button({ href, children, outline = false, light = false }) {
     >
       {children}
     </motion.a>
-  );
-}
-
-function Brand() {
-  return (
-    <Link href="/" className="hy-brand" aria-label="KDYM home">
-      <img src="/KDYM-Logotype-White.png" alt="Kansas District Youth Ministries" />
-      <span aria-hidden="true" className="hy-brand-separator" />
-      <span className="hy-brand-tag">The district / connected</span>
-    </Link>
-  );
-}
-
-function SiteNav() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  return (
-    <header className="hy-nav">
-      <div className="hy-container">
-        <div className="hy-nav-inner">
-          <Brand />
-          <nav className="hy-nav-links" aria-label="Primary navigation">
-            {nav.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
-            <Link href="/merch">Merch</Link>
-          </nav>
-          <div className="hy-nav-actions">
-            <a className="hy-nav-cta" href={REGISTER} rel="noopener noreferrer" target="_blank">
-              Register <ArrowUpRight size={15} />
-            </a>
-            <button type="button" className="hy-menu-button" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
-              {menuOpen ? <X size={19} /> : <Menu size={19} />}
-            </button>
-          </div>
-        </div>
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.nav className="hy-mobile-menu" aria-label="Mobile navigation" initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: .2 }}>
-              {nav.map((item) => <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>)}
-              <Link href="/merch" onClick={() => setMenuOpen(false)}>Merch</Link>
-            </motion.nav>
-          )}
-        </AnimatePresence>
-      </div>
-    </header>
   );
 }
 
@@ -134,7 +82,7 @@ function Poster() {
         style={reduced ? undefined : { rotateX, rotateY }}
         onPointerMove={onMove}
         onPointerLeave={() => { mx.set(0); my.set(0); }}
-        initial={reduced ? false : { opacity: 0, scale: .9, y: 45, rotate: 5 }}
+        initial={false}
         animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
         transition={{ type: "spring", stiffness: 80, damping: 20, delay: .15 }}
       >
@@ -232,36 +180,6 @@ function AppSection() {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="hy-footer" id="connect">
-      <div className="hy-container">
-        <div className="hy-footer-top">
-          <div>
-            <img src="/KDYM-Logotype-White.png" alt="Kansas District Youth Ministries" className="hy-footer-logo" />
-            <h2>Across Kansas.<br />Together in purpose.</h2>
-            <div className="hy-socials">
-              <a href="https://www.instagram.com/kdym_official/" target="_blank" rel="noopener noreferrer">Instagram ↗</a>
-              <a href="https://www.facebook.com/KDYM.Official" target="_blank" rel="noopener noreferrer">Facebook ↗</a>
-            </div>
-          </div>
-          <nav className="hy-footer-links" aria-label="Footer navigation">
-            <a href="#retreat">Retreat</a><a href="#details">Event details</a>
-            <a href={REGISTER} target="_blank" rel="noopener noreferrer">Register</a><Link href="/merch">Merch</Link>
-            <Link href="/app">Download the app</Link><a href="https://kansasupci.org/" target="_blank" rel="noopener noreferrer">Kansas District UPCI</a>
-            <Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link>
-            <Link href="/community-guidelines">Community guidelines</Link>
-          </nav>
-        </div>
-        <div className="hy-footer-bottom">
-          <span>© {new Date().getFullYear()} Kansas District Youth Ministries</span>
-          <span>Faith · Connection · Purpose</span>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 export default function HomePage() {
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll();
@@ -271,15 +189,15 @@ export default function HomePage() {
     <main className="retreat-root" id="top">
       <a className="hy-skip" href="#main-content">Skip to content</a>
       <motion.div className="hy-progress" style={{ scaleX: progress }} aria-hidden="true"/>
-      <SiteNav />
+      <PublicHeader />
       <section className="hy-hero" id="main-content" aria-label="Heartland Hyphen Retreat">
         <div className="hy-container hy-grid" id="retreat">
           <motion.div style={reduced ? undefined : { y: heroY }}>
-            <Reveal><span className="hy-kicker"><i className="hy-pulse" /> THE NEXT KDYM GATHERING · NOVEMBER 2026</span></Reveal>
-            <Reveal delay={.06}><h1 className="hy-hero-h1"><span>HYPHEN</span><span><em>RETREAT.</em></span></h1></Reveal>
-            <Reveal delay={.12}>
+            <Reveal aboveFold><span className="hy-kicker"><i className="hy-pulse" /> THE NEXT KDYM GATHERING · NOVEMBER 2026</span></Reveal>
+            <Reveal delay={.06} aboveFold><h1 className="hy-hero-h1"><span>HYPHEN</span><span><em>RETREAT.</em></span></h1></Reveal>
+            <Reveal delay={.12} aboveFold>
               <p className="hy-hero-year">HEARTLAND / 2026 / KANSAS DISTRICT</p>
-              <p className="hy-hero-description">A weekend set apart for young adults to connect, grow in faith, and move forward with purpose. This is your invitation.</p>
+              <p className="hy-hero-description">Kansas District Youth Ministries invites young adults to a weekend of worship, connection, and spiritual growth. Join us in Olathe.</p>
               <div className="hy-btn-row"><Button href={REGISTER}>Register for retreat <ArrowUpRight size={18}/></Button><Button href="#details" outline>Explore the details <ArrowDown size={17}/></Button></div>
               <div className="hy-mini-meta"><span><CalendarDays size={16}/> NOV 12—14, 2026</span><span><MapPin size={16}/> OLATHE, KANSAS</span><span><Countdown /></span></div>
             </Reveal>
@@ -289,6 +207,7 @@ export default function HomePage() {
         <a className="hy-scroll-hint" href="#experience"><span /> Scroll to explore <ArrowDown size={13}/></a>
       </section>
       <Ticker />
+      <RetreatAtAGlance />
       <section className="hy-section" id="experience" aria-labelledby="experience-title">
         <div className="hy-container hy-split-section">
           <Reveal>
@@ -322,6 +241,8 @@ export default function HomePage() {
         </div>
       </section>
       <Details />
+      <RetreatSchedule />
+      <RetreatPlanning />
       <section className="hy-next" id="next" aria-labelledby="next-title">
         <div className="hy-container">
           <Reveal>
@@ -332,7 +253,7 @@ export default function HomePage() {
           <div className="hy-event-list">
             {futureEvents.map((event, index) => (
               <Reveal key={event.title} delay={index * .08}>
-                <a className="hy-event-row" href="https://kansasupci.org/events" target="_blank" rel="noopener noreferrer">
+                <a className="hy-event-row" href={event.href} target="_blank" rel="noopener noreferrer">
                   <span className="hy-event-date">{event.date}</span>
                   <div><div className="hy-event-title">{event.title}</div><span>{event.description}</span></div>
                   <ArrowUpRight size={22} />
@@ -356,7 +277,7 @@ export default function HomePage() {
           </Reveal>
         </div>
       </section>
-      <Footer />
+      <PublicFooter />
     </main>
   );
 }
