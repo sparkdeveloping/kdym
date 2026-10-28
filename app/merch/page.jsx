@@ -112,10 +112,10 @@ export default function MerchPage() {
     } else { video.pause(); setPlaying(false); }
   };
   return (
-    <main className="retreat-root hy-shop" id="main-content">
+    <main className="retreat-root hy-shop">
       <PublicHeader />
       <div className="hy-container">
-        <div className="hy-shop-hero">
+        <div className="hy-shop-hero" id="main-content" tabIndex={-1}>
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6 }}>
             <span className="hy-kicker"><span className="hy-pulse" /> OFFICIAL DISTRICT MERCH</span>
             <h1 className="hy-section-title" style={{ marginTop: 27, fontSize: "clamp(39px,9vw,125px)" }}>WEAR THE<br/><strong>MOVEMENT.</strong></h1>
