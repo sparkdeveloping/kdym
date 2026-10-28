@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, Download, Smartphone, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, Smartphone, ShieldCheck } from "lucide-react";
+import { PublicHeader, PublicFooter } from "../../components/PublicSiteChrome";
 
 export const metadata = {
   title: "Get the KDYM App",
@@ -27,13 +28,8 @@ const platforms = [
 export default function AppDownloadPage() {
   return (
     <main className="retreat-root" style={{ minHeight: "100svh", background: "radial-gradient(ellipse at 82% 16%,rgba(150,124,241,.21),transparent 45%),#080a12" }}>
-      <div className="hy-container" style={{ paddingTop: 35 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-          <Link href="/" aria-label="Back to KDYM website"><img src="/KDYM-Logotype-White.png" alt="Kansas District Youth Ministries" style={{ width: "min(210px,48vw)", height: "auto" }} /></Link>
-          <Link href="/" className="hy-btn-outline" style={{ padding: "12px 17px", minHeight: 44, fontSize: 12 }}><ArrowLeft size={16} /> Website</Link>
-        </div>
-      </div>
-      <section className="hy-container" style={{ paddingTop: 90, paddingBottom: 110 }}>
+      <PublicHeader />
+      <section className="hy-container" style={{ paddingTop: 175, paddingBottom: 110 }}>
         <div style={{ maxWidth: 830 }}>
           <span className="hy-kicker"><span className="hy-pulse" /> THE OFFICIAL KDYM APP</span>
           <h1 className="hy-section-title" style={{ marginTop: 27, fontSize: "clamp(58px,10vw,142px)" }}>DISTRICT.<br/><span style={{ color: "var(--hy-lime)" }}>CONNECTED.</span></h1>
@@ -59,6 +55,7 @@ export default function AppDownloadPage() {
           <Link href="/" className="hy-detail-link" style={{ color: "var(--hy-purple)" }}>Explore Heartland Hyphen Retreat <ArrowUpRight size={18}/></Link>
         </div>
       </section>
+      <PublicFooter />
     </main>
   );
 }
