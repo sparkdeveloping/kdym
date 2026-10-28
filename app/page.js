@@ -211,7 +211,7 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredEvent) }} />
       <motion.div className="hy-progress" style={{ scaleX: progress }} aria-hidden="true"/>
       <PublicHeader />
-      <section className="hy-hero" id="main-content" aria-label="Heartland Hyphen Retreat">
+      <section className="hy-hero" id="main-content" tabIndex={-1} aria-label="Heartland Hyphen Retreat">
         <div className="hy-container hy-grid" id="retreat">
           <motion.div style={reduced ? undefined : { y: heroY }}>
             <Reveal aboveFold><span className="hy-kicker"><i className="hy-pulse" /> THE NEXT KDYM GATHERING · NOVEMBER 2026</span></Reveal>
