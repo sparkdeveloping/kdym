@@ -64,6 +64,7 @@ export function PublicHeader() {
 
   return (
     <header className="hy-nav">
+      <a className="hy-skip" href="#main-content">Skip to main content</a>
       <div className="hy-container">
         <div className="hy-nav-inner">
           <Brand />
