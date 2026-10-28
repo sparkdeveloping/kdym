@@ -27,9 +27,9 @@ const platforms = [
 
 export default function AppDownloadPage() {
   return (
-    <main className="retreat-root" id="main-content" style={{ minHeight: "100svh", background: "radial-gradient(ellipse at 82% 16%,rgba(150,124,241,.21),transparent 45%),#080a12" }}>
+    <main className="retreat-root" style={{ minHeight: "100svh", background: "radial-gradient(ellipse at 82% 16%,rgba(150,124,241,.21),transparent 45%),#080a12" }}>
       <PublicHeader />
-      <section className="hy-container" style={{ paddingTop: 175, paddingBottom: 110 }}>
+      <section id="main-content" tabIndex={-1} className="hy-container" style={{ paddingTop: 175, paddingBottom: 110 }}>
         <div style={{ maxWidth: 830 }}>
           <span className="hy-kicker"><span className="hy-pulse" /> THE OFFICIAL KDYM APP</span>
           <h1 className="hy-section-title" style={{ marginTop: 27, fontSize: "clamp(34px,10vw,142px)" }}>DISTRICT.<br/><span style={{ color: "var(--hy-lime)" }}>CONNECTED.</span></h1>
