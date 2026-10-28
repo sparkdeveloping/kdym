@@ -243,3 +243,93 @@ body { margin: 0; }
 @media(max-width:1050px){.hy-nav-links{display:none;}.hy-menu-button{display:inline-flex;}.hy-mobile-menu{display:block;}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important;}}
 .retreat-root [id]{scroll-margin-top:115px;}
+
+
+/* Shared navigation and accessibility polish */
+.retreat-root :focus-visible { outline: 3px solid var(--hy-lime); outline-offset: 4px; }
+.hy-nav a:focus-visible,.hy-nav button:focus-visible { outline-offset: 3px; }
+.hy-legal-shell { min-height: 100vh; }
+.hy-legal-page { background: transparent !important; }
+.hy-legal-page > section { padding-top: 160px; }
+.hy-hero-h1 { overflow-wrap: normal; }
+.hy-hero { padding-bottom: 95px; }
+.hy-shop-hero { padding-top: 180px; }
+.hy-stat-number { font-size: clamp(100px, 14vw, 188px); line-height: .9; }
+.hy-scroll-hint { z-index: 4; }
+
+/* High-signal essentials immediately after the hero */
+.hy-quick-facts { background: #e8e6df; color: #13141c; padding: 32px 0; }
+.hy-facts-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.hy-facts-grid > div { display: flex; flex-direction: column; justify-content: center; min-height: 115px; padding: 13px 20px; border-left: 1px solid rgba(32,27,44,.19); }
+.hy-facts-grid span { font: 700 10px "Space Grotesk", sans-serif; letter-spacing: .18em; color: #746d85; }
+.hy-facts-grid strong { font: 700 clamp(22px, 2.8vw, 33px)/1.1 "Space Grotesk", sans-serif; letter-spacing: -.055em; margin: 12px 0 9px; }
+.hy-facts-grid small { font: 500 12px "DM Sans", sans-serif; color: #595963; line-height: 1.4; }
+.hy-facts-grid .hy-facts-action { background: #1d1a2d; border: 0; border-radius: 19px; }
+.hy-facts-action span { color: #bbb1dd; }
+.hy-facts-action a { display: flex; justify-content: space-between; align-items: center; gap: 10px; font: 700 25px/1.1 "Space Grotesk", sans-serif; color: var(--hy-lime); letter-spacing: -.05em; margin: 9px 0; }
+.hy-facts-grid .hy-facts-action small { color: #a5a0b6; }
+
+/* Published schedule */
+.hy-schedule-section { background: linear-gradient(160deg,#151526,#0b0c14); }
+.hy-schedule-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 47px; align-items: stretch; }
+.hy-schedule-card { border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.035); border-radius: 28px; padding: 28px 26px 23px; }
+.hy-schedule-card-head { padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,.12); }
+.hy-schedule-card-head span { color: #baacf6; letter-spacing: .18em; font: 700 10px "Space Grotesk", sans-serif; }
+.hy-schedule-card-head h3 { font: 700 clamp(34px,4vw,52px)/.95 "Space Grotesk", sans-serif; letter-spacing: -.07em; margin: 22px 0 9px; }
+.hy-schedule-card-head small { font-size: 13px; color: #abaab8; }
+.hy-schedule-card ol { list-style: none; padding: 0; margin: 11px 0 0; }
+.hy-schedule-card li { display: grid; grid-template-columns: 90px 1fr; gap: 14px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+.hy-schedule-card li:last-child { border-bottom: 0; }
+.hy-schedule-card time { font: 700 12px/1.5 "Space Grotesk", sans-serif; color: var(--hy-lime); white-space: nowrap; }
+.hy-schedule-card li strong { display: block; font-size: 14px; font-weight: 700; }
+.hy-schedule-card li small { display: block; font-size: 12px; line-height: 1.5; color: #b0acbd; margin-top: 6px; }
+.hy-schedule-source { margin: 24px 0 0; color: #aaaabc; font-size: 13px; line-height: 1.7; }
+.hy-schedule-source a,.hy-faq-note a { display: inline-flex; align-items: center; gap: 4px; text-decoration: underline; text-underline-offset: 3px; color: #d4c6ff; }
+
+/* Simple accessible native disclosure panels */
+.hy-plan-grid { display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr); gap: clamp(30px,7vw,120px); }
+.hy-faq { border-top: 1px solid var(--hy-border); }
+.hy-faq-item { border-bottom: 1px solid var(--hy-border); }
+.hy-faq-item summary { display: flex; align-items: center; gap: 16px; list-style: none; cursor: pointer; padding: 23px 2px; color: #f3f0fb; font: 700 clamp(15px,1.6vw,18px) "Space Grotesk", sans-serif; letter-spacing: -.025em; }
+.hy-faq-item summary::-webkit-details-marker { display: none; }
+.hy-faq-item summary > span:first-child { color: #b7a5ff; font-size: 11px; letter-spacing: .1em; }
+.hy-faq-plus { margin-left: auto; color: var(--hy-lime); font-size: 25px; transition: transform .2s; }
+.hy-faq-item[open] .hy-faq-plus { transform: rotate(45deg); }
+.hy-faq-item p { margin: -3px 0 24px 35px; max-width: 590px; color: #b9bac8; font-size: 14px; line-height: 1.85; }
+.hy-faq-note { margin-top: 24px; font-size: 12px; color: #a7a9b7; line-height: 1.7; }
+
+/* Text readability and responsiveness */
+.hy-section-kicker,.hy-kicker,.hy-detail-top span,.hy-card-label { font-size: max(11px, 0.7rem); }
+.hy-brand-tag { font-size: 11px; }
+.hy-nav-links a { font-size: 13px; }
+.hy-mini-meta { font-size: 13px; }
+.hy-stat-slab { overflow: hidden; }
+.hy-footer-links { font-size: 14px; }
+@media(max-width:1050px){
+  .hy-facts-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .hy-schedule-grid { grid-template-columns: 1fr 1fr; }
+  .hy-plan-grid { grid-template-columns: 1fr; gap: 45px; }
+  .hy-shop-hero { padding-top: 165px; }
+}
+@media(max-width:700px){
+  .hy-schedule-grid { grid-template-columns: 1fr; }
+  .hy-quick-facts { padding: 22px 0; }
+  .hy-hero { padding-bottom: 75px; }
+  .hy-scroll-hint { display: none; }
+  .hy-shop-hero { padding-top: 140px; }
+}
+@media(max-width:520px){
+  .hy-facts-grid { gap: 2px; }
+  .hy-facts-grid > div { padding: 14px 12px; min-height: 105px; }
+  .hy-facts-grid strong { font-size: 21px; }
+  .hy-facts-action a { font-size: 19px; }
+  .hy-hero-h1 { font-size: clamp(43px, 12.7vw, 75px); }
+  .hy-schedule-card { padding: 24px 18px; }
+  .hy-schedule-card li { grid-template-columns: 84px 1fr; }
+  .hy-legal-page > section { padding-top: 135px; }
+  .hy-stat-number { font-size: clamp(95px, 31vw, 145px); }
+}
+@media(prefers-reduced-motion:reduce){
+  .hy-pulse { box-shadow: none !important; }
+  .hy-poster * { animation: none !important; }
+}
