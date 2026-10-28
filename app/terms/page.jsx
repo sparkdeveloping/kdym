@@ -115,7 +115,7 @@ export const metadata = {
 
 export default function TermsOfServicePage() {
   return (
-    <main className="hy-legal-page min-h-screen bg-[#050608] text-white">
+    <main id="main-content" className="hy-legal-page min-h-screen bg-[#050608] text-white">
       <section className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-6 py-20 sm:px-8 lg:px-10">
         <div className="space-y-5">
           <p className="text-xs font-black uppercase tracking-[0.35em] text-red-400">Kansas District Youth Ministries</p>
