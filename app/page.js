@@ -1,762 +1,304 @@
 "use client";
 
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Clock,
-  Flame,
-  Menu,
-  Play,
-  ShoppingBag,
-  Ticket,
-  X,
-} from "lucide-react";
-import { useState } from "react";
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, useInView } from "framer-motion";
+import { ArrowDown, ArrowRight, ArrowUpRight, CalendarDays, ChevronRight, ExternalLink, MapPin, Menu, Smartphone, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { PublicHeader, PublicFooter } from "../components/PublicSiteChrome";
+import { RetreatAtAGlance, RetreatSchedule, RetreatPlanning } from "../components/RetreatInfo";
 
-const registerLink =
-  "https://kansasupci.churchtrac.com/connect?ei=ZTZ5JAI&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnHAN7BdKB7EGMfG9LSvgknT9Dn-bJuTL3LYNT93HtB_aMGDB4KIijICm0Orc_aem_9x3eA25GAMAQqIrjptaN5g";
+const REGISTER = "https://kansasupci.churchtrac.com/connect?ei=HEF01AC";
+const IOS = "https://apps.apple.com/us/app/kdym/id6766344337";
+const ANDROID = "https://play.google.com/store/apps/details?id=dev.bti.kdym";
+const DIRECTIONS = "https://www.google.com/maps/search/?api=1&query=19405%20W%20151st%20Terrace%20Olathe%20KS%2066062";
+const RETREAT_START = new Date("2026-11-12T00:00:00-06:00").getTime();
 
-const events = [
-  {
-    title: "Vision Rally",
-    date: "Jan 30",
-    day: "Friday",
-    status: "Completed",
-    color: "from-cyan-400/20 to-white/5",
-  },
-  {
-    title: "Kansas Youth Convention",
-    date: "Mar 13–14",
-    day: "Friday & Saturday",
-    status: "Completed",
-    color: "from-red-500/20 to-white/5",
-  },
-  {
-    title: "Section 2 Youth Rally",
-    date: "Apr 22",
-    day: "District Gathering",
-    status: "Completed",
-    color: "from-amber-400/20 to-white/5",
-  },
-  {
-    title: "Heartland Senior Camp",
-    date: "Jun 1–4",
-    day: "Tabor College",
-    status: "Registration Open",
-    color: "from-red-500/35 to-cyan-500/10",
-    featured: true,
-  },
+const futureEvents = [
+  { date: "JAN 29 / 2027", title: "KDYM Vision Rally", description: "First Pentecostal Church · Wichita", href: "https://kansasupci.org/events/kdym-vision-rally/2027-01-29" },
+  { date: "MAR 12–13 / 2027", title: "Kansas Youth Convention", description: "First Pentecostal Church · Wichita", href: "https://kansasupci.org/events/kansas-youth-convention--108/2027-03-12" },
 ];
 
-const navItems = [
-  { label: "Events", href: "#events" },
-  { label: "Play", href: "/play" },
-  { label: "Merch", href: "/merch" },
-  { label: "Connect", href: "#connect" },
-];
+function Reveal({ children, className = "", delay = 0, aboveFold = false }) {
+  const reduced = useReducedMotion();
+  const ref = useRef(null);
+  const visible = useInView(ref, { once: true, margin: "-50px" });
+  return (
+    <motion.div ref={ref} className={className} initial={false}
+      animate={{ opacity: 1, y: reduced || aboveFold || visible ? 0 : 16 }}
+      transition={{ duration: reduced ? 0 : .65, ease: [0.2, 0.8, 0.2, 1], delay }}>
+      {children}
+    </motion.div>
+  );
+}
 
-const InstagramSVG = (props) => (
-  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-    <rect
-      x="3"
-      y="3"
-      width="18"
-      height="18"
-      rx="5"
-      stroke="currentColor"
-      strokeWidth="2"
-    />
-    <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
-    <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" />
-  </svg>
-);
-
-const FacebookSVG = (props) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-    <path d="M22 12.07C22 6.48 17.52 2 11.93 2S1.86 6.48 1.86 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.03H7.9v-2.9h2.4V9.41c0-2.37 1.4-3.68 3.55-3.68 1.03 0 2.11.18 2.11.18v2.33h-1.19c-1.18 0-1.55.73-1.55 1.48v1.78h2.64l-.42 2.9h-2.22V22c4.78-.75 8.44-4.91 8.44-9.93z" />
-  </svg>
-);
-
-function MagneticButton({ href, children, variant = "primary", className = "" }) {
+function Button({ href, children, outline = false, light = false }) {
   return (
     <motion.a
       href={href}
-      target={href?.startsWith("http") ? "_blank" : undefined}
-      rel={href?.startsWith("http") ? "noreferrer" : undefined}
-      whileHover={{ scale: 1.045, y: -2 }}
-      whileTap={{ scale: 0.96 }}
-      transition={{ type: "spring", stiffness: 420, damping: 18 }}
-      className={[
-        "group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full px-6 py-4 text-sm font-black uppercase tracking-[0.16em] transition",
-        variant === "primary"
-          ? "bg-white text-black shadow-[0_0_45px_rgba(255,255,255,0.18)]"
-          : "border border-white/15 bg-white/[0.06] text-white backdrop-blur-xl hover:bg-white/[0.1]",
-        className,
-      ].join(" ")}
+      target={href.startsWith("http") ? "_blank" : undefined}
+      rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+      className={outline ? "hy-btn-outline" : "hy-btn-primary"}
+      style={light ? { background: "#13181b", color: "#fff" } : undefined}
+      whileHover={{ y: -3, scale: 1.025 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 380, damping: 22 }}
     >
-      <span className="absolute inset-0 translate-x-[-120%] bg-gradient-to-r from-transparent via-white/40 to-transparent transition duration-700 group-hover:translate-x-[120%]" />
-      <span className="relative z-10 flex items-center gap-3">{children}</span>
+      {children}
     </motion.a>
   );
 }
 
-function FloatingOrb({ className, delay = 0 }) {
-  return (
-    <motion.div
-      animate={{
-        y: [0, -24, 0],
-        x: [0, 14, 0],
-        scale: [1, 1.08, 1],
-      }}
-      transition={{
-        duration: 7,
-        delay,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
-      className={className}
-    />
-  );
+function Countdown() {
+  const [remaining, setRemaining] = useState(null);
+  useEffect(() => {
+    const update = () => setRemaining(Math.max(0, RETREAT_START - Date.now()));
+    update();
+    const interval = setInterval(update, 60000);
+    return () => clearInterval(interval);
+  }, []);
+  if (remaining === null) return <span>November 12–14, 2026</span>;
+  if (remaining === 0) return <span>Retreat season is here</span>;
+  const days = Math.ceil(remaining / (1000 * 60 * 60 * 24));
+  return <span>{days} days until we gather</span>;
 }
 
-function GlitchWord() {
+function Poster() {
+  const reduced = useReducedMotion();
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const rotateX = useSpring(useTransform(my, [-1, 1], [8, -8]), { stiffness: 100, damping: 18 });
+  const rotateY = useSpring(useTransform(mx, [-1, 1], [-8, 8]), { stiffness: 100, damping: 18 });
+
+  const onMove = (event) => {
+    if (reduced || event.pointerType === "touch") return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    mx.set(((event.clientX - rect.left) / rect.width) * 2 - 1);
+    my.set(((event.clientY - rect.top) / rect.height) * 2 - 1);
+  };
   return (
-    <div className="relative select-none">
-      <motion.h1
-        initial={{ opacity: 0, y: 40, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{
-          duration: 0.9,
-          type: "spring",
-          stiffness: 90,
-          damping: 13,
-        }}
-        className="font-glitch text-[4.8rem] leading-[0.75] tracking-[-0.08em] text-white drop-shadow-[0_0_35px_rgba(255,255,255,0.25)] sm:text-[7rem] md:text-[9rem] lg:text-[12rem]"
-      >
-        OUTPOUR
-      </motion.h1>
-
+    <div className="hy-poster-wrap">
+      <div className="hy-poster-glow" />
       <motion.div
-        animate={{
-          x: [-8, 8, -4, 5, 0],
-          opacity: [0.25, 0.8, 0.35, 0.65, 0.25],
-        }}
-        transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-        className="font-glitch pointer-events-none absolute inset-0 text-[4.8rem] leading-[0.75] tracking-[-0.08em] text-red-500/35 blur-[1px] sm:text-[7rem] md:text-[9rem] lg:text-[12rem]"
+        className="hy-poster"
+        style={reduced ? undefined : { rotateX, rotateY }}
+        onPointerMove={onMove}
+        onPointerLeave={() => { mx.set(0); my.set(0); }}
+        initial={false}
+        animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
+        transition={{ type: "spring", stiffness: 80, damping: 20, delay: .15 }}
       >
-        OUTPOUR
-      </motion.div>
-
-      <motion.div
-        animate={{
-          x: [7, -7, 4, -5, 0],
-          opacity: [0.15, 0.55, 0.25, 0.45, 0.15],
-        }}
-        transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-        className="font-glitch pointer-events-none absolute inset-0 text-[4.8rem] leading-[0.75] tracking-[-0.08em] text-cyan-300/30 blur-[1px] sm:text-[7rem] md:text-[9rem] lg:text-[12rem]"
-      >
-        OUTPOUR
+        <div className="hy-poster-corner">KDYM / 2026</div>
+        <div className="hy-poster-corner hy-poster-corner-right">11—12—26</div>
+        <motion.div className="hy-poster-big" aria-hidden="true" animate={reduced ? {} : { y: [0, -15, 0], rotate: [-18, -15, -18] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}>H</motion.div>
+        <motion.div className="hy-poster-orbit" aria-hidden="true" animate={reduced ? {} : { rotate: [-37, -26, -37] }} transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }} />
+        <motion.div className="hy-poster-orbit hy-poster-orbit-two" aria-hidden="true" animate={reduced ? {} : { rotate: [57, 48, 57] }} transition={{ duration: 13, repeat: Infinity, ease: "easeInOut" }} />
+        <div className="hy-poster-caption"><span>Kansas district / Young adults</span><strong>HEARTLAND<br />HYPHEN</strong></div>
+        <div className="hy-poster-side">RETREAT · OLATHE · NOVEMBER</div>
       </motion.div>
     </div>
   );
 }
 
-function EventCard({ event, index }) {
+function Ticker() {
+  const reduced = useReducedMotion();
+  const values = ["CONNECTED BY PURPOSE", "GROUNDED IN FAITH", "MADE FOR COMMUNITY", "KANSAS DISTRICT", "HEARTLAND HYPHEN"];
+  const content = [...values, ...values].flatMap((value, index) => [
+    <span key={index + "w"}>{value}</span>,
+    <i key={index + "i"} aria-hidden="true">✳</i>,
+  ]);
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 38, rotateX: 8 }}
-      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{
-        delay: index * 0.07,
-        type: "spring",
-        stiffness: 120,
-        damping: 18,
-      }}
-      whileHover={{
-        y: -10,
-        scale: 1.015,
-        rotateX: 2,
-        transition: { type: "spring", stiffness: 300, damping: 18 },
-      }}
-      className={[
-        "group relative min-h-[270px] overflow-hidden rounded-[2rem] border p-6 md:p-7",
-        event.featured
-          ? "border-red-300/35 bg-red-500/[0.08] md:col-span-2"
-          : "border-white/10 bg-white/[0.035]",
-      ].join(" ")}
-    >
-      <div className={`absolute inset-0 bg-gradient-to-br ${event.color} opacity-80`} />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgba(255,255,255,0.16),transparent_30%)] opacity-0 transition duration-500 group-hover:opacity-100" />
-      <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-white/10 blur-3xl transition duration-500 group-hover:bg-red-400/25" />
-
-      <div className="relative z-10 flex h-full flex-col justify-between">
-        <div className="flex items-start justify-between gap-6">
-          <span
-            className={[
-              "inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.16em]",
-              event.featured
-                ? "bg-red-500 text-white shadow-[0_0_24px_rgba(239,68,68,0.45)]"
-                : "bg-white/10 text-white/55",
-            ].join(" ")}
-          >
-            {event.status}
-          </span>
-
-          <motion.div
-            whileHover={{ rotate: 45, scale: 1.1 }}
-            transition={{ type: "spring", stiffness: 360, damping: 14 }}
-            className="rounded-full border border-white/10 bg-white/5 p-3 text-white/50 backdrop-blur-xl group-hover:text-white"
-          >
-            <ArrowUpRight size={20} />
-          </motion.div>
-        </div>
-
-        <div>
-          <p className="mb-4 text-5xl font-black tracking-[-0.08em] text-white/95 md:text-6xl">
-            {event.date}
-          </p>
-          <h3 className="max-w-xl text-2xl font-black uppercase leading-none tracking-[-0.05em] md:text-4xl">
-            {event.title}
-          </h3>
-          <p className="mt-4 flex items-center gap-2 text-sm font-bold uppercase tracking-[0.16em] text-white/50">
-            <Clock size={15} />
-            {event.day}
-          </p>
-
-          {event.featured && (
-            <div className="mt-7">
-              <MagneticButton href={registerLink} className="px-5 py-3">
-                Register Now
-                <ArrowRight size={17} />
-              </MagneticButton>
-            </div>
-          )}
-        </div>
-      </div>
-    </motion.article>
+    <div className="hy-ticker" aria-label="Connected by purpose. Grounded in faith. Made for community.">
+      <div className="hy-ticker-track" style={reduced ? { animation: "none" } : undefined} aria-hidden="true">{content}</div>
+    </div>
   );
 }
 
-export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const { scrollYProgress } = useScroll();
-  const rawY = useTransform(scrollYProgress, [0, 1], [0, -180]);
-  const y = useSpring(rawY, { stiffness: 80, damping: 20 });
-
+function Details() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#050608] text-white">
-      <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Rubik+Glitch&family=Inter:wght@400;500;600;700;800;900&display=swap");
-
-        html {
-          scroll-behavior: smooth;
-        }
-
-        body {
-          font-family: "Inter", sans-serif;
-          background: #050608;
-        }
-
-        .font-glitch {
-          font-family: "Rubik Glitch", system-ui;
-        }
-
-        .noise {
-          background-image: radial-gradient(
-            rgba(255, 255, 255, 0.08) 1px,
-            transparent 1px
-          );
-          background-size: 3px 3px;
-        }
-
-        .grid-mask {
-          background-image: linear-gradient(
-              rgba(255, 255, 255, 0.045) 1px,
-              transparent 1px
-            ),
-            linear-gradient(
-              90deg,
-              rgba(255, 255, 255, 0.045) 1px,
-              transparent 1px
-            );
-          background-size: 54px 54px;
-          mask-image: linear-gradient(to bottom, black, transparent 80%);
-        }
-      `}</style>
-
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(8,145,178,0.28),transparent_28%),radial-gradient(circle_at_82%_12%,rgba(220,38,38,0.32),transparent_30%),radial-gradient(circle_at_52%_92%,rgba(127,29,29,0.34),transparent_35%),linear-gradient(135deg,#061117_0%,#050608_42%,#110102_100%)]" />
-        <div className="grid-mask absolute inset-0 opacity-60" />
-        <div className="noise absolute inset-0 opacity-[0.13]" />
-        <motion.div
-          style={{ y }}
-          className="absolute left-1/2 top-20 h-[42rem] w-[42rem] -translate-x-1/2 rounded-full bg-red-600/10 blur-[120px]"
-        />
-      </div>
-
-      <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 md:px-8">
-        <motion.nav
-          initial={{ y: -80, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 140, damping: 18 }}
-          className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/10 bg-black/35 px-4 py-3 shadow-2xl backdrop-blur-2xl md:px-5"
-        >
-          <a href="/" className="flex items-center gap-3">
-            <img
-              src="/KDYM-Logotype-White.png"
-              alt="Kansas District Youth Ministries"
-              className="h-8 w-auto md:h-10"
-            />
-          </a>
-
-          <div className="hidden items-center gap-1 md:flex">
-            {navItems.map((item) => (
-              <motion.a
-                key={item.label}
-                href={item.href}
-                whileHover={{ y: -2, scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                className="rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-white/55 transition hover:bg-white/10 hover:text-white"
-              >
-                {item.label}
-              </motion.a>
-            ))}
-          </div>
-
-          <div className="hidden md:block">
-            <MagneticButton href={registerLink} className="px-5 py-2.5 text-xs">
-              Register
-            </MagneticButton>
-          </div>
-
-          <button
-            onClick={() => setMenuOpen((value) => !value)}
-            className="rounded-full border border-white/10 bg-white/5 p-2 md:hidden"
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </motion.nav>
-
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -14, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="mx-auto mt-3 max-w-7xl rounded-[1.5rem] border border-white/10 bg-black/80 p-3 backdrop-blur-2xl md:hidden"
-          >
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={() => setMenuOpen(false)}
-                className="block rounded-2xl px-4 py-3 text-sm font-black uppercase tracking-[0.18em] text-white/70 hover:bg-white/10"
-              >
-                {item.label}
-              </a>
-            ))}
-            <a
-              href={registerLink}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-2 block rounded-2xl bg-white px-4 py-3 text-center text-sm font-black uppercase tracking-[0.18em] text-black"
-            >
-              Register
-            </a>
-          </motion.div>
-        )}
-      </header>
-
-      <section className="relative z-10 min-h-screen px-5 pb-20 pt-32 md:px-8 lg:px-10">
-        <FloatingOrb className="absolute left-[7%] top-[22%] h-24 w-24 rounded-full border border-cyan-300/20 bg-cyan-400/10 blur-sm" />
-        <FloatingOrb
-          delay={1.4}
-          className="absolute right-[9%] top-[20%] h-36 w-36 rounded-full border border-red-300/20 bg-red-500/10 blur-sm"
-        />
-        <FloatingOrb
-          delay={0.7}
-          className="absolute bottom-[18%] left-[18%] h-14 w-14 rounded-full bg-amber-300/20 blur-md"
-        />
-
-        <div className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+    <section className="hy-section" id="details" aria-labelledby="detail-title">
+      <div className="hy-container">
+        <Reveal className="hy-details-header">
           <div>
-            <motion.div
-              initial={{ opacity: 0, y: 22, scale: 0.94 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 0.15, type: "spring", stiffness: 120 }}
-              className="mb-7 inline-flex items-center gap-2 rounded-full border border-red-400/25 bg-red-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-red-100 shadow-[0_0_35px_rgba(239,68,68,0.13)] backdrop-blur-xl"
-            >
-              <Flame size={16} />
-              2026 District Theme
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.22 }}
-              className="mb-3 text-2xl font-black uppercase leading-none tracking-[-0.04em] text-white/90 md:text-5xl"
-            >
-              Heartland Youth Camp
-            </motion.p>
-
-            <GlitchWord />
-
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.36, duration: 0.7 }}
-              className="mt-8 max-w-2xl text-lg font-medium leading-8 text-white/62 md:text-xl"
-            >
-              A digital home for Kansas District Youth Ministries — built around
-              rallies, convention, camp, worship moments, media, merch, and the
-              move of God across this generation.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 26 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.48 }}
-              className="mt-9 flex flex-col gap-4 sm:flex-row"
-            >
-              <MagneticButton href={registerLink}>
-                Register for Camp
-                <Ticket size={18} />
-              </MagneticButton>
-
-              <MagneticButton href="/play" variant="secondary">
-                Open Play
-                <Play size={17} fill="currentColor" />
-              </MagneticButton>
-            </motion.div>
+            <span className="hy-section-kicker">All the essentials / No searching required</span>
+            <h2 className="hy-section-title" id="detail-title">Save the<br /><strong>dates.</strong></h2>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 48, rotate: 2 }}
-            animate={{ opacity: 1, x: 0, rotate: 0 }}
-            transition={{
-              delay: 0.24,
-              type: "spring",
-              stiffness: 90,
-              damping: 15,
-            }}
-            className="relative"
-          >
-            <div className="absolute -inset-8 rounded-[4rem] bg-gradient-to-br from-red-500/20 via-cyan-400/10 to-transparent blur-3xl" />
-
-            <motion.div
-              whileHover={{ scale: 1.015, rotate: -0.8 }}
-              transition={{ type: "spring", stiffness: 220, damping: 16 }}
-              className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.045] p-5 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.16),transparent_22%),radial-gradient(circle_at_90%_15%,rgba(239,68,68,0.22),transparent_26%),radial-gradient(circle_at_20%_90%,rgba(6,182,212,0.16),transparent_24%)]" />
-
-              <div className="relative rounded-[2rem] border border-white/10 bg-black/35 p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="h-3 w-3 rounded-full bg-red-400 shadow-[0_0_18px_rgba(248,113,113,0.8)]" />
-                    <span className="h-3 w-3 rounded-full bg-amber-300 shadow-[0_0_18px_rgba(252,211,77,0.6)]" />
-                    <span className="h-3 w-3 rounded-full bg-cyan-300 shadow-[0_0_18px_rgba(103,232,249,0.6)]" />
-                  </div>
-                  <p className="text-xs font-black uppercase tracking-[0.24em] text-white/35">
-                    KDYM Live
-                  </p>
-                </div>
-
-                <div className="mt-14">
-                  <motion.div
-                    animate={{ scale: [1, 1.08, 1] }}
-                    transition={{
-                      duration: 2.4,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="mx-auto flex h-28 w-28 items-center justify-center rounded-full border border-white/10 bg-white/[0.07] shadow-[0_0_80px_rgba(255,255,255,0.12)]"
-                  >
-                    <Play size={34} fill="white" />
-                  </motion.div>
-
-                  <div className="mt-14 grid gap-3">
-                    {[
-                      ["Next Up", "Heartland Senior Camp"],
-                      ["Dates", "June 1–4"],
-                      ["Location", "Tabor College"],
-                    ].map(([label, value], index) => (
-                      <motion.div
-                        key={label}
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.65 + index * 0.08 }}
-                        className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-4"
-                      >
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-white/35">
-                          {label}
-                        </p>
-                        <p className="text-right text-sm font-black uppercase tracking-[0.08em] text-white">
-                          {value}
-                        </p>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      <section className="relative z-10 px-5 py-24 md:px-8 lg:px-10">
-        <div className="mx-auto max-w-7xl">
-          <motion.div
-            initial={{ opacity: 0, y: 34 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-120px" }}
-            transition={{ type: "spring", stiffness: 110, damping: 18 }}
-            className="relative overflow-hidden rounded-[2.75rem] border border-white/10 bg-white/[0.035] p-7 shadow-[0_30px_120px_rgba(0,0,0,0.35)] backdrop-blur-2xl md:p-12"
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(6,182,212,0.18),transparent_28%),radial-gradient(circle_at_86%_18%,rgba(239,68,68,0.24),transparent_30%),radial-gradient(circle_at_50%_100%,rgba(251,191,36,0.12),transparent_35%)]" />
-
-            <motion.div
-              animate={{ x: ["-35%", "135%"] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-              className="absolute top-0 h-full w-1/3 rotate-12 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-xl"
-            />
-
-            <div className="relative z-10 grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-              <div>
-                <motion.div
-                  animate={{
-                    scale: [1, 1.04, 1],
-                    opacity: [0.8, 1, 0.8],
-                  }}
-                  transition={{
-                    duration: 2.7,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="mb-7 inline-flex items-center gap-2 rounded-full border border-red-300/25 bg-red-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-red-100 shadow-[0_0_45px_rgba(239,68,68,0.14)]"
-                >
-                  <Flame size={16} />
-                  Outpour Scripture
-                </motion.div>
-
-                <h2 className="max-w-4xl text-5xl font-black uppercase leading-[0.87] tracking-[-0.075em] md:text-7xl">
-                  Not just a theme.
-                  <span className="block text-white/45">
-                    A promise poured out.
-                  </span>
-                </h2>
-
-                <p className="mt-7 max-w-2xl text-lg leading-8 text-white/58">
-                  The visual identity points back to the prophecy, the altar,
-                  and the urgency of this generation responding to God in the
-                  last days.
-                </p>
-              </div>
-
-              <div className="relative">
-                <motion.div
-                  animate={{
-                    rotate: [-1.2, 1.2, -1.2],
-                    y: [0, -10, 0],
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-black/35 p-7 md:p-9"
-                >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.16),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(239,68,68,0.22),transparent_35%)]" />
-
-                  <div className="relative z-10">
-                    <p className="text-sm font-black uppercase tracking-[0.28em] text-cyan-200">
-                      Joel 2:28
-                    </p>
-
-                    <blockquote className="mt-6 text-3xl font-black uppercase leading-[1.02] tracking-[-0.055em] text-white md:text-5xl">
-                      “I will pour out my spirit upon all flesh.”
-                    </blockquote>
-
-                    <div className="mt-8 h-px w-full bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-
-                    <motion.div
-                      animate={{
-                        opacity: [0.35, 1, 0.35],
-                        letterSpacing: ["0.16em", "0.24em", "0.16em"],
-                      }}
-                      transition={{
-                        duration: 2.2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                      className="mt-8 text-center text-sm font-black uppercase text-red-200 md:text-base"
-                    >
-                      These are the last days
-                    </motion.div>
-
-                    <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                      {["Sons", "Daughters", "Young Men"].map((word, index) => (
-                        <motion.div
-                          key={word}
-                          animate={{
-                            y: [0, -6, 0],
-                            opacity: [0.62, 1, 0.62],
-                          }}
-                          transition={{
-                            duration: 2.5,
-                            delay: index * 0.25,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          }}
-                          className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white/65"
-                        >
-                          {word}
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      <section id="events" className="relative z-10 px-5 py-24 md:px-8 lg:px-10">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 flex flex-col justify-between gap-7 md:flex-row md:items-end">
+          <p className="hy-section-desc" style={{ maxWidth: 390 }}>Everything confirmed for Heartland Hyphen Retreat. Full registration details and current pricing are available through the official signup.</p>
+        </Reveal>
+        <div className="hy-details-grid">
+          <Reveal className="hy-detail-card" delay={.04}>
+            <div className="hy-detail-top"><span>01 / WHEN</span><CalendarDays size={23} /></div>
+            <div><h3>November<br />12—14, 2026</h3><p>Thursday through Saturday. Set this weekend apart.</p></div>
+          </Reveal>
+          <Reveal className="hy-detail-card" delay={.09}>
+            <div className="hy-detail-top"><span>02 / WITH</span><span>GUEST SPEAKER</span></div>
+            <div><h3>Bruce<br />Howell</h3><p>Joining us for Heartland Hyphen Retreat 2026.</p></div>
+          </Reveal>
+          <Reveal className="hy-detail-card hy-detail-card-wide" delay={.14}>
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.28em] text-red-300">
-                2026 Movement
-              </p>
-              <h2 className="mt-4 max-w-4xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.075em] md:text-7xl">
-                The year in one district flow.
-              </h2>
+              <div className="hy-detail-top"><span>03 / WHERE</span><MapPin size={23}/></div>
+              <h3>Cross Church<br />Kansas City</h3>
+              <p>19405 W 151st Terrace · Olathe, Kansas 66062</p>
             </div>
+            <div style={{ alignSelf: "end" }}>
+              <p>Find your way to the retreat. Location details have been verified against the host church.</p>
+              <a className="hy-detail-link" href={DIRECTIONS} target="_blank" rel="noopener noreferrer">Get directions <ArrowUpRight size={16} /></a>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-            <p className="max-w-xl text-lg leading-8 text-white/55">
-              This is the home base for rallies, convention, camp, registration,
-              media, merch, and what KDYM is carrying this year.
-            </p>
+function AppSection() {
+  return (
+    <section id="app" className="hy-app" aria-labelledby="app-title">
+      <div className="hy-container hy-app-grid">
+        <Reveal>
+          <span className="hy-section-kicker">The district in your pocket</span>
+          <h2 className="hy-section-title" id="app-title">Stay<br />in the <strong>loop.</strong></h2>
+          <p className="hy-section-desc">The official KDYM app brings ministry updates, events, announcements, community and media into one place. Available for iPhone and Android.</p>
+          <div className="hy-app-buttons">
+            <Button href={IOS} outline>Download for iPhone <ArrowUpRight size={16} /></Button>
+            <Button href={ANDROID} outline>Get it on Android <ArrowUpRight size={16} /></Button>
           </div>
+          <a className="hy-detail-link" href="/app" style={{ marginTop: 23 }}>App download options <ArrowRight size={16}/></a>
+        </Reveal>
+        <Reveal delay={.12}>
+          <div className="hy-app-art" aria-label="KDYM official app">
+            <div className="hy-app-art-mark"><img src="/KDYM-Icon-White.png" width="114" height="114" alt="KDYM icon" loading="lazy" /></div>
+            <div className="hy-app-art-label">KANSAS DISTRICT YOUTH MINISTRIES / THE APP</div>
+            <strong>ONE<br/>DISTRICT.<br/><span>CONNECTED.</span></strong>
+            <p>Real community. Real updates. One place to stay connected.</p>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
-          <div className="grid gap-5 md:grid-cols-2">
-            {events.map((event, index) => (
-              <EventCard key={event.title} event={event} index={index} />
+const structuredEvent = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  name: "Heartland Hyphen Retreat 2026",
+  description: "A Kansas District Youth Ministries young-adult retreat with guest speaker Bruce Howell.",
+  startDate: "2026-11-12",
+  endDate: "2026-11-14",
+  eventStatus: "https://schema.org/EventScheduled",
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  location: {
+    "@type": "Place",
+    name: "Cross Church Kansas City",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "19405 W 151st Terrace",
+      addressLocality: "Olathe",
+      addressRegion: "KS",
+      postalCode: "66062",
+      addressCountry: "US",
+    }
+  },
+  organizer: { "@type": "Organization", name: "Kansas District Youth Ministries", url: "https://kdym.org" },
+  url: "https://kdym.org"
+};
+
+export default function HomePage() {
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 100, damping: 28 });
+  const heroY = useTransform(scrollYProgress, [0, .4], [0, -110]);
+  return (
+    <main className="retreat-root" id="top">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredEvent) }} />
+      <motion.div className="hy-progress" style={{ scaleX: progress }} aria-hidden="true"/>
+      <PublicHeader />
+      <section className="hy-hero" id="main-content" tabIndex={-1} aria-label="Heartland Hyphen Retreat">
+        <div className="hy-container hy-grid" id="retreat">
+          <motion.div style={reduced ? undefined : { y: heroY }}>
+            <Reveal aboveFold><span className="hy-kicker"><i className="hy-pulse" /> THE NEXT KDYM GATHERING · NOVEMBER 2026</span></Reveal>
+            <Reveal delay={.06} aboveFold><h1 className="hy-hero-h1"><span>HYPHEN</span><span><em>RETREAT.</em></span></h1></Reveal>
+            <Reveal delay={.12} aboveFold>
+              <p className="hy-hero-year">HEARTLAND / 2026 / KANSAS DISTRICT</p>
+              <p className="hy-hero-description">Kansas District Youth Ministries invites young adults to a weekend of worship, connection, and spiritual growth. Join us in Olathe.</p>
+              <div className="hy-btn-row"><Button href={REGISTER}>Register for retreat <ArrowUpRight size={18}/></Button><Button href="#details" outline>Explore the details <ArrowDown size={17}/></Button></div>
+              <div className="hy-mini-meta"><span><CalendarDays size={16}/> NOV 12—14, 2026</span><span><MapPin size={16}/> OLATHE, KANSAS</span><span><Countdown /></span></div>
+            </Reveal>
+          </motion.div>
+          <Poster />
+        </div>
+        <a className="hy-scroll-hint" href="#experience"><span /> Scroll to explore <ArrowDown size={13}/></a>
+      </section>
+      <Ticker />
+      <RetreatAtAGlance />
+      <section className="hy-section" id="experience" aria-labelledby="experience-title">
+        <div className="hy-container hy-split-section">
+          <Reveal>
+            <span className="hy-section-kicker">More than another event</span>
+            <h2 className="hy-section-title" id="experience-title">YOU BELONG<br /><strong>HERE.</strong></h2>
+            <p className="hy-section-desc">Hyphen is about connection in a defining season of life. Faith beyond a moment. Friends beyond a weekend. Purpose that carries into everyday life.</p>
+            <div className="hy-values">
+              <div className="hy-value"><span>01</span><strong>Grow closer to God.</strong></div>
+              <div className="hy-value"><span>02</span><strong>Find your people.</strong></div>
+              <div className="hy-value"><span>03</span><strong>Move with purpose.</strong></div>
+            </div>
+          </Reveal>
+          <Reveal delay={.12}>
+            <div className="hy-stat-slab">
+              <div className="hy-stat-orbit" aria-hidden="true" />
+              <span className="hy-stat-number">18<br/>—30</span>
+              <small>Hyphen / Young adult ministry</small>
+              <div className="hy-stat-bottom"><span>Building a generation of connected young adults.</span><ArrowUpRight size={33}/></div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+      <section className="hy-feature-band" aria-label="Retreat invitation">
+        <div className="hy-container">
+          <Reveal>
+            <span className="hy-section-kicker" style={{ color: "#4d4d39" }}>A place to reconnect / A reason to go deeper</span>
+            <h2 className="hy-feature-heading">NOT JUST<br />ATTENDING.<br /><i>BELONGING.</i></h2>
+            <p className="hy-feature-sub">We are making room for connection, worship, and the conversations that shape what comes next.</p>
+            <div className="hy-btn-row"><Button href={REGISTER} outline light>Make plans to be there <ArrowUpRight size={18}/></Button></div>
+          </Reveal>
+        </div>
+      </section>
+      <Details />
+      <RetreatSchedule />
+      <RetreatPlanning />
+      <section className="hy-next" id="next" aria-labelledby="next-title">
+        <div className="hy-container">
+          <Reveal>
+            <span className="hy-section-kicker">One retreat. A whole district.</span>
+            <h2 className="hy-section-title" id="next-title">KDYM DOESN'T<br /><span style={{ color: "#7b6a99" }}>STOP HERE.</span></h2>
+            <p className="hy-section-desc" style={{ color: "#5d616a" }}>Heartland Hyphen Retreat is our next gathering. The rest of the district's calendar is already taking shape.</p>
+          </Reveal>
+          <div className="hy-event-list">
+            {futureEvents.map((event, index) => (
+              <Reveal key={event.title} delay={index * .08}>
+                <a className="hy-event-row" href={event.href} target="_blank" rel="noopener noreferrer">
+                  <span className="hy-event-date">{event.date}</span>
+                  <div><div className="hy-event-title">{event.title}</div><span>{event.description}</span></div>
+                  <ArrowUpRight size={22} />
+                </a>
+              </Reveal>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="relative z-10 px-5 py-24 md:px-8 lg:px-10">
-        <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-2">
-          <motion.a
-            href="/play"
-            whileHover={{ y: -10, scale: 1.015 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: "spring", stiffness: 260, damping: 17 }}
-            className="group relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.04] p-8 transition hover:bg-white/[0.07] md:p-10"
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(6,182,212,0.18),transparent_30%)] opacity-80" />
-            <div className="relative z-10">
-              <Play className="mb-14 text-cyan-200" size={38} fill="currentColor" />
-              <p className="text-sm font-black uppercase tracking-[0.25em] text-cyan-200">
-                Play
-              </p>
-              <h3 className="mt-4 text-5xl font-black uppercase leading-[0.9] tracking-[-0.075em]">
-                Watch. Listen. Remember.
-              </h3>
-              <p className="mt-5 max-w-xl leading-7 text-white/55">
-                Videos, recap moments, sermons, Spotify links, Apple Music links,
-                and future audio archives.
-              </p>
-            </div>
-          </motion.a>
-
-          <motion.a
-            href="/merch"
-            whileHover={{ y: -10, scale: 1.015 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: "spring", stiffness: 260, damping: 17 }}
-            className="group relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.04] p-8 transition hover:bg-white/[0.07] md:p-10"
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(239,68,68,0.22),transparent_32%)] opacity-80" />
-            <div className="relative z-10">
-              <ShoppingBag className="mb-14 text-red-200" size={38} />
-              <p className="text-sm font-black uppercase tracking-[0.25em] text-red-200">
-                Merch
-              </p>
-              <h3 className="mt-4 text-5xl font-black uppercase leading-[0.9] tracking-[-0.075em]">
-                Wear the movement.
-              </h3>
-              <p className="mt-5 max-w-xl leading-7 text-white/55">
-                A dedicated store page for camp shirts, Outpour drops, and KDYM
-                apparel.
-              </p>
-            </div>
-          </motion.a>
-        </div>
-      </section>
-
-      <section id="connect" className="relative z-10 px-5 py-24 md:px-8 lg:px-10">
-        <div className="mx-auto max-w-7xl rounded-[2.5rem] border border-white/10 bg-white/[0.035] p-8 text-center md:p-12">
-          <p className="text-sm font-black uppercase tracking-[0.28em] text-cyan-200">
-            Stay Connected
-          </p>
-          <h2 className="mx-auto mt-4 max-w-4xl text-5xl font-black uppercase leading-[0.9] tracking-[-0.075em] md:text-7xl">
-            Follow what God is doing across Kansas.
-          </h2>
-
-          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-            <MagneticButton
-              href="https://www.instagram.com/kdym_official/"
-              variant="secondary"
-            >
-              <InstagramSVG className="h-[18px] w-[18px]" />
-              @kdym_official
-            </MagneticButton>
-
-            <MagneticButton
-              href="https://www.facebook.com/KDYM.Official"
-              variant="secondary"
-            >
-              <FacebookSVG className="h-[18px] w-[18px]" />
-              KDYM.Official
-            </MagneticButton>
+          <div className="hy-btn-row" style={{ marginTop: 38 }}>
+            <Button href="https://kansasupci.org/events" outline light>District event calendar <ArrowUpRight size={17}/></Button>
           </div>
         </div>
       </section>
-
-      <footer className="relative z-10 border-t border-white/10 px-5 py-10 md:px-8 lg:px-10">
-        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-8 md:flex-row md:items-center">
-          <div className="flex items-center gap-4">
-            <img src="/KDYM-Icon-White.png" alt="KDYM" className="h-10 w-auto" />
-            <div>
-              <p className="text-sm font-black uppercase tracking-[0.18em] text-white/70">
-                Kansas District Youth Ministries
-              </p>
-              <p className="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-white/30">
-                Heartland Outpour
-              </p>
-            </div>
-          </div>
-
-          <a
-            href={registerLink}
-            target="_blank"
-            rel="noreferrer"
-            className="group inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.18em] text-white/55 transition hover:text-white"
-          >
-            Register for Camp
-            <ArrowUpRight
-              size={17}
-              className="transition group-hover:translate-x-1 group-hover:-translate-y-1"
-            />
-          </a>
+      <AppSection />
+      <section className="hy-section" aria-label="Register now">
+        <div className="hy-container" style={{ textAlign: "center" }}>
+          <Reveal>
+            <span className="hy-section-kicker">November 12—14 / Cross Church Kansas City</span>
+            <h2 className="hy-section-title" style={{ margin: "0 auto" }}>YOUR PLACE<br />IS <strong>WAITING.</strong></h2>
+            <p className="hy-section-desc" style={{ margin: "22px auto 30px" }}>Ready for Heartland Hyphen Retreat? Registration is hosted securely by Kansas District UPCI through ChurchTrac.</p>
+            <div className="hy-btn-row" style={{ justifyContent: "center" }}><Button href={REGISTER}>Register on ChurchTrac <ArrowUpRight size={18}/></Button></div>
+          </Reveal>
         </div>
-      </footer>
+      </section>
+      <PublicFooter />
     </main>
   );
 }
