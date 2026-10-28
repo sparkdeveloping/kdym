@@ -112,7 +112,7 @@ export default function MerchPage() {
     } else { video.pause(); setPlaying(false); }
   };
   return (
-    <main className="retreat-root hy-shop">
+    <main className="retreat-root hy-shop" id="main-content">
       <PublicHeader />
       <div className="hy-container">
         <div className="hy-shop-hero">
