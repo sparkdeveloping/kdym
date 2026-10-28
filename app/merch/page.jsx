@@ -118,7 +118,7 @@ export default function MerchPage() {
         <div className="hy-shop-hero">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6 }}>
             <span className="hy-kicker"><span className="hy-pulse" /> OFFICIAL DISTRICT MERCH</span>
-            <h1 className="hy-section-title" style={{ marginTop: 27, fontSize: "clamp(56px,9vw,125px)" }}>WEAR THE<br/><strong>MOVEMENT.</strong></h1>
+            <h1 className="hy-section-title" style={{ marginTop: 27, fontSize: "clamp(39px,9vw,125px)" }}>WEAR THE<br/><strong>MOVEMENT.</strong></h1>
             <p className="hy-section-desc">Explore existing KDYM apparel and everyday essentials, including the 2026 Outpour collection. Checkout is handled through Kick Merch.</p>
             <div className="hy-btn-row">
               <a className="hy-btn-primary" href={featuredProduct.href} rel="noopener noreferrer" target="_blank">Shop featured tee <ArrowUpRight size={17}/></a>
