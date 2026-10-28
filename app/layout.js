@@ -24,7 +24,6 @@ export const metadata = {
   },
   twitter: { card: "summary", title: "Heartland Hyphen Retreat 2026 | KDYM" },
   robots: { index: true, follow: true },
-  icons: { icon: "/favicon.ico" },
 };
 
 export const viewport = {
