@@ -356,3 +356,5 @@ body { margin: 0; }
 .hy-app-art p{position:relative;font-size:14px;line-height:1.7;color:#c8c5d8;margin:22px 0 0;}
 @media(max-width:850px){.hy-app-art{min-height:490px;}}
 @media(max-width:520px){.hy-app-art{min-height:450px;padding:24px;}.hy-app-art-mark{top:24px;left:24px;}.hy-app-art strong{font-size:clamp(42px,12vw,63px);}}
+
+@media(max-width:520px){.hy-feature-heading{font-size:clamp(37px,11.6vw,70px)}.hy-section-title{font-size:clamp(38px,9vw,75px)}.hy-hero-h1{font-size:clamp(43px,12.7vw,75px)}}
