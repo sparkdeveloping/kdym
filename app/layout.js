@@ -14,7 +14,6 @@ export const metadata = {
   description: "Kansas District Youth Ministries. Join us for Heartland Hyphen Retreat, November 12–14, 2026 at Cross Church Kansas City in Olathe, Kansas. Register today.",
   applicationName: "KDYM",
   keywords: ["KDYM", "Kansas District Youth Ministries", "Heartland Hyphen Retreat", "Hyphen Retreat 2026", "Kansas UPCI", "young adults", "Olathe"],
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: "Kansas District Youth Ministries",
