@@ -332,11 +332,11 @@ export default function HomePage() {
           <div className="hy-event-list">
             {futureEvents.map((event, index) => (
               <Reveal key={event.title} delay={index * .08}>
-                <div className="hy-event-row">
+                <a className="hy-event-row" href="https://kansasupci.org/events" target="_blank" rel="noopener noreferrer">
                   <span className="hy-event-date">{event.date}</span>
                   <div><div className="hy-event-title">{event.title}</div><span>{event.description}</span></div>
                   <ArrowUpRight size={22} />
-                </div>
+                </a>
               </Reveal>
             ))}
           </div>
