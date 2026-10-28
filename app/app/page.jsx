@@ -32,7 +32,7 @@ export default function AppDownloadPage() {
       <section className="hy-container" style={{ paddingTop: 175, paddingBottom: 110 }}>
         <div style={{ maxWidth: 830 }}>
           <span className="hy-kicker"><span className="hy-pulse" /> THE OFFICIAL KDYM APP</span>
-          <h1 className="hy-section-title" style={{ marginTop: 27, fontSize: "clamp(58px,10vw,142px)" }}>DISTRICT.<br/><span style={{ color: "var(--hy-lime)" }}>CONNECTED.</span></h1>
+          <h1 className="hy-section-title" style={{ marginTop: 27, fontSize: "clamp(34px,10vw,142px)" }}>DISTRICT.<br/><span style={{ color: "var(--hy-lime)" }}>CONNECTED.</span></h1>
           <p className="hy-section-desc">Get KDYM on your phone. Ministry updates, events, announcements, groups, and community in one app. Download it directly from your device's official app store.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,320px),1fr))", gap: 16, marginTop: 55 }}>
